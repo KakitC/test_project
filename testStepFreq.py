@@ -8,7 +8,7 @@ OS = platform.system()
 if OS == "Windows":
     from time import clock as time
 elif OS == "Linux":
-    from time import clock as time
+    from time import time as time
 
 # Import GPIO library, or fake version for development
 try:
@@ -27,11 +27,12 @@ mot_a_pins = (step_pin_a, en_pin_a, dir_pin_a)
 dir_right = 0
 dir_left = 1
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(step_pin_a, GPIO.OUTPUT)
+GPIO.setmode(GPIO.BCM)
+#GPIO.setup(step_pin_a, GPIO.OUT)
+GPIO.setup(mot_a_pins, GPIO.OUT)
 
 # Toggle GPIO stepper pins <iters> times
-iters = 1000000
+iters = 100000
 startTime = time()
 for i in range(iters):
     GPIO.output(mot_a_pins, (True, True, dir_right))
