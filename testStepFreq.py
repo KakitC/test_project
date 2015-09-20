@@ -3,7 +3,12 @@
 
 __author__ = 'kakit'
 
-import time
+import platform
+OS = platform.system()
+if OS == "Windows":
+    from time import clock as time
+elif OS == "Linux":
+    from time import clock as time
 
 # Import GPIO library, or fake version for development
 try:
@@ -13,17 +18,10 @@ except ImportError:
     print("Importing Fake RPI.GPIO")
     import FakeRPI.GPIO as GPIO
 
-# Import picamera library, or fake version for development
-try:
-    import picamera as pic
-    print("Real RPi.GPIO imported")
-except ImportError:
-    import FakePicamera as pic
-    print("Importing Fake picamera")
 
-step_pin_a = 1
-en_pin_a = 2
-dir_pin_a = 3
+step_pin_a = 2
+en_pin_a = 3
+dir_pin_a = 4
 mot_a_pins = (step_pin_a, en_pin_a, dir_pin_a)
 
 dir_right = 0
@@ -34,11 +32,11 @@ GPIO.setup(step_pin_a, GPIO.OUTPUT)
 
 # Toggle GPIO stepper pins <iters> times
 iters = 1000000
-startTime = time.clock()
+startTime = time()
 for i in range(iters):
     GPIO.output(mot_a_pins, (True, True, dir_right))
     GPIO.output(mot_a_pins, (False, True, dir_right))
-endTime = time.clock()
+endTime = time()
 print("Time to toggle " + str(iters) + " times: " + str(endTime - startTime))
 
 

@@ -3,7 +3,13 @@ Functions to perform image processing for raster engrave image.
 """
 __author__ = 'kakit'
 
-import time
+import platform
+OS = platform.system()
+if OS == "Windows":
+    from time import clock as time
+elif OS == "Linux":
+    from time import clock as time
+
 from PIL import Image, ImageOps, ImageFilter, ImageChops, ImageEnhance, \
     ImageStat
 
@@ -20,7 +26,7 @@ def raster_ips(in_file, out_file):
     with Image.open(in_file) as pic:
         # Debug
         print("Size: " + str(pic.size))
-        start = time.clock()
+        start = time()
 
         pic = pic.convert(mode="L")  # To greyscale
 
@@ -42,16 +48,20 @@ def raster_ips(in_file, out_file):
 
         pic.save(out_file)
 
-        print("Time: " + str(time.clock() - start))
+        print("Time: " + str(time() - start))
         print("")
 
     return True
 
-start_time = time.clock()
+start_time = time()
 n = 0
 while 1:
-    in_file = "test_pics\\raster\\raster_test" + str(n) + ".jpg"
-    out_file = "test_pics\\raster\\raster_test" + str(n) + "out.jpg"
+    if OS == "Windows":
+        in_file = "test_pics\\raster\\raster_test" + str(n) + ".jpg"
+        out_file = "test_pics\\raster\\raster_test" + str(n) + "out.jpg"
+    elif OS == "Linux":
+        in_file = "test_pics/raster/raster_test" + str(n) + ".jpg"
+        out_file = "test_pics/raster/raster_test" + str(n) + "out.jpg"
     print(str(n))
 
     try:
@@ -60,4 +70,4 @@ while 1:
         break
     n += 1
 
-print("Time taken: " + str(time.clock() - start_time))
+print("Time taken: " + str(time() - start_time))
