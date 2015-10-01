@@ -1,5 +1,5 @@
 """
-Functions to perform image processing for raster engrave image.
+Functions to try out image processing code for raster engrave software path.
 """
 __author__ = 'kakit'
 
@@ -13,21 +13,16 @@ elif OS == "Linux":
 from PIL import Image, ImageOps, ImageFilter, ImageChops, ImageEnhance, \
     ImageStat
 
-def raster_ips(in_file, out_file):
+def raster_ips(in_file):
     """ Convert an image to greyscale, and tweak the contrast/brightness and
     low-pass filter until it is ready to be sent to the laser as a power/speed
     bitmap.
     :param in_file: <string> relative file path and name of input image
-    :param out_file: <string> directory and name of output image
-    :return: True, exception based failure
+    :return: Image converted to raster bitmap
     """
 
     # Main processing blocks, filters
     with Image.open(in_file) as pic:
-        # Debug
-        print("Size: " + str(pic.size))
-        start = time()
-
         pic = pic.convert(mode="L")  # To greyscale
 
         edges = pic.filter(ImageFilter.CONTOUR)  # Pick out edges
@@ -46,28 +41,43 @@ def raster_ips(in_file, out_file):
         pic = ImageOps.posterize(pic, 1)  # Down from grey to black and white
         pic = ImageOps.autocontrast(pic)  # Convert grey to white, black same
 
-        pic.save(out_file)
+        return pic
 
-        print("Time: " + str(time() - start))
-        print("")
+# Main test function
+def main_test():
+    """
+    Runs laser rasterizing algorithm on images in ./test_pics/raster/ and
+    measures runtime performance. Saves processed the black and white images in
+    the same folder.
+    """
+    start_time = time()
+    n = 0
+    in_file, out_file = "", ""
+    while 1:
+        if OS == "Windows":
+            in_file = "test_pics\\raster\\raster_test" + str(n) + ".jpg"
+            out_file = "test_pics\\raster\\raster_test" + str(n) + "out.jpg"
+        elif OS == "Linux":
+            in_file = "test_pics/raster/raster_test" + str(n) + ".jpg"
+            out_file = "test_pics/raster/raster_test" + str(n) + "out.jpg"
+        print(str(n))
 
-    return True
+        try:
+            start = time()
 
-start_time = time()
-n = 0
-while 1:
-    if OS == "Windows":
-        in_file = "test_pics\\raster\\raster_test" + str(n) + ".jpg"
-        out_file = "test_pics\\raster\\raster_test" + str(n) + "out.jpg"
-    elif OS == "Linux":
-        in_file = "test_pics/raster/raster_test" + str(n) + ".jpg"
-        out_file = "test_pics/raster/raster_test" + str(n) + "out.jpg"
-    print(str(n))
+            pic = raster_ips(in_file)
+            pic.save(out_file)
 
-    try:
-        raster_ips(in_file, out_file)
-    except IOError:
-        break
-    n += 1
+            print("Size: " + str(pic.size))
+            print("Time: " + str(time() - start))
+            print("")
 
-print("Time taken: " + str(time() - start_time))
+        except IOError:
+            break
+        n += 1
+
+    print("Time taken: " + str(time() - start_time))
+
+# Run the script
+if __name__ == "__main__":
+    main_test()
