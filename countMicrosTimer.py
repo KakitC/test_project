@@ -28,19 +28,19 @@ print "Iterations in 1ms ", count #with print statement: ", count
 # what's the error on each call at 1us period, accumulated error
 startTime = time()
 deltaTime = 0
-finishTime = .1
+finishTime = 1
 iters = 4000
 count = 0
 saveTime = []
 while deltaTime < finishTime: # less than 1ms
     deltaTime = time() - startTime
-    if deltaTime > ((count + 1) * finishTime / iters):
+    if deltaTime > ((count + 1.0) * finishTime / iters):
         count +=1
         saveTime.append(deltaTime)
 
 print "Iteration precision at {} counts in {}s, count: {}".format(iters, finishTime, count)
-print "i.e.{}/{}Hz".format(count / finishTime, iters / finishTime)
+print "i.e.{}/{}Hz".format(count / float(finishTime), float(iters) / finishTime)
 
-errTime = [saveTime[x] - ((x +1) * finishTime / iters) for x in range(len(saveTime))]
-print "Errors: ", errTime[-5:-1], "..."
+errTime = [saveTime[x] - ((x + 1.0) * float(finishTime) / iters) for x in range(len(saveTime))]
+print "Errors: ", errTime[100:105], "..."
 print "Average error: ",  sum(errTime) / count
