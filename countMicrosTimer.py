@@ -1,5 +1,6 @@
 """ Measure CPU clock speed and precision
 """
+import math
 
 __author__ = 'kakit'
 
@@ -42,5 +43,11 @@ print "Iteration precision at {} counts in {}s, count: {}".format(iters, finishT
 print "i.e.{}/{}Hz".format(count / float(finishTime), float(iters) / finishTime)
 
 errTime = [saveTime[x] - ((x + 1.0) * float(finishTime) / iters) for x in range(len(saveTime))]
-print "Errors: ", errTime[100:105], "..."
-print "Average error: ",  sum(errTime) / count
+
+print "Ex. Errors, max, min: ", errTime[100:101], ", ", max(errTime), ", " , \
+    min(errTime), "..."
+mean = sum(errTime) / count
+print "Average error: ", mean
+std_dev = math.sqrt(sum([(x - mean)**2 for x in errTime])/len(errTime))
+print "Standard deviation: ", std_dev
+print "dev: ", [x - mean for x in errTime[100:105]]

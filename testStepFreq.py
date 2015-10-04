@@ -1,5 +1,6 @@
 """ Test max stepping speed and precision
 """
+import math
 
 __author__ = 'kakit'
 
@@ -45,8 +46,8 @@ print("Time to toggle " + str(iters) + " times: " + str(endTime - startTime))
 startTime = time()
 print startTime
 deltaTime = 0
-finishTime = 1
-iters = 20000  # iters = frequency if finishTime = 1
+finishTime = 10
+iters = 100000  # iters = frequency if finishTime = 1
 count = 0
 saveTime = []
 while deltaTime < finishTime:
@@ -63,9 +64,13 @@ print "Step iteration precision at {} counts in {}s, count: {}".format(iters, fi
 print "i.e.{}/{}Hz".format(count / float(finishTime), iters / float(finishTime))
 
 errTime = [saveTime[x] - ((x+1.0) * finishTime / iters) for x in range(len(saveTime))]
-print "delta: ", saveTime[100:105]
-print "Errors: ", errTime[100:105], "..."
-print "Average error: ",  sum(errTime) / count
+#print "delta: ", saveTime[100:105]
+print "Ex. Errors, max, min: ", errTime[100:101], ", ", max(errTime), ", " , \
+    min(errTime), "..."
+mean = sum(errTime) / count
+print "Average error: ", mean
+std_dev = math.sqrt(sum([(x - mean)**2 for x in errTime])/len(errTime))
+print "Standard deviation: ", std_dev
 
 
 GPIO.cleanup()
