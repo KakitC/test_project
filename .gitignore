@@ -17,7 +17,15 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# IDE files
 .idea*
+
+
+# Compiled files
+*.o
+*.pyd
+*.so
+*\build\*
 *.pyc
 
 # =========================

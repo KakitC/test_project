@@ -39,6 +39,7 @@ for i in range(iters):
     GPIO.output(mot_a_pins, (False, True, dir_right))
 endTime = time()
 print("Time to toggle " + str(iters) + " times: " + str(endTime - startTime))
+print("Toggle freq: " + str(iters / (endTime - startTime)))
 
 
 # Track processor clock precision with GPIO toggles
