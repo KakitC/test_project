@@ -79,7 +79,7 @@ def jitterTest():
     cdef int delta = 0
     cdef int count = 0
 
-    print "testTime {}, targetFreq {}, targetPeriod {}, toggleIters {}\n".format( \
+    print "testTime {}, targetFreq {}, targetPeriod {}, toggleIters {}\n".format(
         testTime, targetFreq, targetPeriod, toggleIters)
 
     gettimeofday(&start, NULL)
@@ -97,14 +97,15 @@ def jitterTest():
             saveTime[count] = delta
             count += 1
 
-    print "Step iteration precision at {}Hz in {}us, count: {}".format( \
+    print "Step iteration precision at {}Hz in {}us, count: {}".format(
         targetFreq, testTime, count)
 
-    errTime = [saveTime[x] - ((x+1.0) * testTime / toggleIters) for x in range(len(saveTime))]
+    errTime = [saveTime[x] - ((x+1.0) * testTime / toggleIters)
+               for x in range(len(saveTime))]
     errTime = [0 if x < 0 else x for x in errTime]
 
-    print "Ex. Errors, max, min: ", errTime[100:101], ", ", max(errTime), ", " , \
-        min(errTime), "..."
+    print "Ex. Errors, max, min: ", errTime[100:101], ", ", max(errTime), \
+        ", " , min(errTime), "..."
 
     mean = sum(errTime) / count
     print "Average error: ", mean
