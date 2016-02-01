@@ -31,9 +31,10 @@ def dither_floyd(img):
     :rtype: PIL.Image.Image
     """
 
-    img_pix = np.array(img, dtype=np.uint8)
+    img_pix = np.array(img, dtype=np.float32)
 
     for i in range(img_pix.shape[0]):
+        #print("orig", img_pix[i][100])#, img_pix[i+1][50])
         for j in range(img_pix.shape[1]):
             old_px = img_pix[i][j]
             new_px = 0 if old_px < 128 else 255
@@ -41,19 +42,26 @@ def dither_floyd(img):
             err = old_px - new_px
 
             if j+1 < img_pix.shape[1]:
-                img_pix[i][j+1] += err * 7 >> 4
+                img_pix[i][j+1] += (err * 7) /16#>> 4
             if i+1 < img_pix.shape[0]:
-                img_pix[i+1][j] += err * 5 >> 4
+                img_pix[i+1][j] += (err * 5) /16#>> 4
                 if j > 0:
-                    img_pix[i+1][j-1] += err * 3 >> 4
+                    img_pix[i+1][j-1] += (err * 3) /16#>> 4
                 if j+1 < img_pix.shape[1]:
-                    img_pix[i+1][j+1] += err * 1 >> 4
+                    img_pix[i+1][j+1] += (err * 1) /16#>> 4
 
+        #     if j == 100:
+        #         print("old_px", old_px)
+        #         print("new_px", new_px)
+        #         print("err", err, err * 5 /16)#>> 4)
+        # print("out", img_pix[i][100])#, img_pix[i+1][50])
+
+    img_pix = img_pix.astype(np.uint8)
     return Image.fromarray(img_pix, "L")
 
 
 def dither_sierra_lite(img):
-    """ Perform Floyd-Steinberg dithering on an image, converting greyscale to
+    """ Perform error propagation dithering (Sierra Lite) on an image, converting greyscale to
     black and white dots.
 
     :param img: Input image
@@ -129,9 +137,9 @@ def raster_dither(in_file):
         elif brightness[0] < 120:
             pic = ImageEnhance.Brightness(pic).enhance(1.2)
 
-        #pic = dither_floyd(pic)
+        pic = dither_floyd(pic)
         #pic = dither_sierra_lite(pic)
-        pic = dither_ordered(pic)
+        #pic = dither_ordered(pic)
 
         return pic
 
@@ -175,10 +183,10 @@ def main_test():
     the same folder.
     """
     start_time = time()
-    n = 0
+    n = 4
     in_file, out_file = "", ""
     while 1:
-    #while n < 3:
+    #while n < 6:
         if OS == "Windows":
             in_file = "test_pics\\raster\\raster_test" + str(n) + ".jpg"
             #out_file = "test_pics\\raster\\raster_test" + str(n) + "out.jpg"
@@ -209,8 +217,4 @@ def main_test():
 
 # Run the script
 if __name__ == "__main__":
-    # main_test()
-    import pyximport
-    pyximport.install()
-    import rasterIPScython
-    rasterIPScython.main_test()
+    main_test()
